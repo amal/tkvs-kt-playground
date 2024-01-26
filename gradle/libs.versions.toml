@@ -11,21 +11,16 @@
 version = "1.0"
 
 javaLangTarget = "11"
-#kotlinLangVersion = "1.8"
-#kotlinApiVersion = "1.8"
-#kotlinCoreLibraries = "1.8.22"
 
 kotlin = "1.9.22"
-
 detekt = "1.23.4"
+shadow = "8.1.1"
 fluxo-conf = "0.6.0"
-
-
-[libraries]
 
 
 [plugins]
 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 fluxo-conf = { id = "io.github.fluxo-kt.fluxo-kmp-conf", version.ref = "fluxo-conf" }
