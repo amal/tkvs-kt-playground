@@ -6,7 +6,9 @@ Simple in-memory transactional key-value store.
 * Parallel/concurrent transactions are not supported.
 * Not thread-safe!
 
-Main implementation calss: [TransactionalKeyValueStore.kt](src/main/kotlin/TransactionalKeyValueStore.kt)
+Main implementation class: [TransactionalKeyValueStore.kt](src/main/kotlin/TransactionalKeyValueStore.kt)
+
+Unit tests: [TransactionalKeyValueStoreTest.kt](src/test/kotlin/TransactionalKeyValueStoreTest.kt)
 
 A built jar is available in [bin/tkvs.jar](../../raw/main/bin/tkvs.jar).<br>
 Run it with `java -jar bin/tkvs.jar` for an interactive console.<br>
