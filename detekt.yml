@@ -1,0 +1,20 @@
+config:
+  validation: true
+  warningsAsErrors: false
+  checkExhaustiveness: false
+
+output-reports:
+  active: true
+  exclude:
+    - 'TxtOutputReport'
+    - 'XmlOutputReport'
+    - 'HtmlOutputReport'
+    - 'MdOutputReport'
+
+console-reports:
+  active: true
+  exclude: [ ]
+
+naming:
+  InvalidPackageDeclaration:
+    rootPackage: "kt.tkvs"

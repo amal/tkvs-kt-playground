@@ -1,0 +1,19 @@
+.gradle/
+build/
+local.properties
+
+# IDEs
+*.iml
+*.ipr
+*.iws
+.fleet/
+.idea/
+.kotlin/
+.vscode/
+out/
+projectFilesBackup*/
+
+# Other
+*.log
+.DS_Store
+Thumbs.db
