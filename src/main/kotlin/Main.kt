@@ -42,26 +42,32 @@ private fun TransactionalKeyValueStore.processCommand(cmd: Command): String? {
             null
         }
 
-        is Command.Delete -> {
-            delete(key = cmd.key)
-            null
-        }
+        is Command.Delete -> alert { delete(key = cmd.key) }
 
         is Command.Begin -> {
             begin()
             null
         }
 
-        is Command.Commit -> {
-            commit()
-            null
-        }
+        is Command.Commit -> alert { commit() }
 
-        is Command.Rollback -> {
-            rollback()
-            null
+        is Command.Rollback -> alert { rollback() }
+    }
+}
+
+private fun alert(body: () -> Any?): Nothing? {
+    print("Are you sure? [y/N] ")
+    val input = readlnOrNull()?.trim()
+    when {
+        Y.equals(input, ignoreCase = true) ||
+            YES.equals(input, ignoreCase = true) ||
+            TRUE.equals(input, ignoreCase = true) ||
+            ONE == input
+        -> {
+            body()
         }
     }
+    return null
 }
 
 
@@ -72,6 +78,11 @@ private const val QUIT = "quit"
 
 private const val H = "h"
 private const val HELP = "help"
+
+private const val Y = "y"
+private const val YES = "yes"
+private const val TRUE = "true"
+private const val ONE = "1"
 
 private const val NO_INPUT =
     "No input provided. Print '$Q' or '$QUIT' to quit. '$H' or '$HELP' for help."
