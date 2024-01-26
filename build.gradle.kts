@@ -11,6 +11,7 @@ version = libs.versions.version.toString()
 
 setupKotlin(
     config = {
+        setupCoroutines = false
         enableApiValidation = false
     },
 )
@@ -22,8 +23,9 @@ dependencies {
 tasks {
     test { useJUnitPlatform() }
 
-    jar { manifest.attributes["Main-Class"] = "$groupName.MainKt" }
-    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-        minimize()
+    jar {
+        manifest.attributes["Main-Class"] = "$groupName.MainKt"
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
     }
 }

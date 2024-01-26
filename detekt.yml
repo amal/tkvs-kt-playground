@@ -1,5 +1,5 @@
 config:
-  validation: true
+  validation: false
   warningsAsErrors: false
   checkExhaustiveness: false
 
@@ -18,3 +18,13 @@ console-reports:
 naming:
   InvalidPackageDeclaration:
     rootPackage: "kt.tkvs"
+
+formatting:
+  ArgumentListWrapping:
+    maxLineLength: 100
+  FunctionSignature:
+    maxLineLength: 100
+  MaximumLineLength:
+    maxLineLength: 100
+  NoConsecutiveBlankLines:
+    active: false
