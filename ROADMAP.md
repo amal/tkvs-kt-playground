@@ -69,10 +69,6 @@ _(interactive, signals handling, colored output)_
 ## Implementations
 
 - switchable different implementations
-  - Stack of Maps
-    - _single map for storage and maintain a change log for each transaction._
-  - Versioned Entries
-    - _Each key maps to an object holding different versions of the value, each tagged with a transaction identifier._
   - Copy-on-Write with Snapshots
     - _Initially, all transactions point to the same data map. On modification, a copy of the modified part is made._
   - _platform-specific like:_

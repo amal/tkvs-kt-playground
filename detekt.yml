@@ -28,3 +28,7 @@ formatting:
     maxLineLength: 100
   NoConsecutiveBlankLines:
     active: false
+  ImportOrdering:
+    active: true
+    autoCorrect: true
+    layout: '*'

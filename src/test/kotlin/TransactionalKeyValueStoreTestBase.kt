@@ -7,14 +7,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-class TransactionalKeyValueStoreTest {
+abstract class TransactionalKeyValueStoreTestBase {
 
-    private lateinit var store: TransactionalKeyValueStore
-
-    @BeforeTest
-    fun setUp() {
-        store = TkvsSingleMap()
-    }
+    protected abstract val store: TransactionalKeyValueStore
 
     @AfterTest
     fun tearDown() {
@@ -37,18 +32,40 @@ class TransactionalKeyValueStoreTest {
 
     @Test
     fun testCount() {
-        store["key1"] = "value"
-        store["key2"] = "value"
-        assertEquals(2, store.count("value"))
+        val v = "value"
+        store["key1"] = v
+        store["key2"] = v
+        assertEquals(2, store.count(v))
     }
 
     @Test
     fun testBeginAndRollback() {
-        store["key"] = "value1"
+        val v = "value1"
+        store["key"] = v
+        assertEquals(0, store.transactionLevel)
         store.begin()
         store["key"] = "value2"
+        assertEquals(1, store.transactionLevel)
         store.rollback()
-        assertEquals("value1", store["key"])
+        assertEquals(v, store["key"])
+        assertEquals(0, store.transactionLevel)
+    }
+
+    @Test
+    fun testEmptyTransactions() {
+        val v = "value1"
+        store["key"] = v
+        assertEquals(0, store.transactionLevel)
+        store.begin()
+        assertEquals(1, store.transactionLevel)
+        store.rollback()
+        assertEquals(0, store.transactionLevel)
+
+        store.begin()
+        assertEquals(1, store.transactionLevel)
+        store.commit()
+        assertEquals(v, store["key"])
+        assertEquals(0, store.transactionLevel)
     }
 
     @Test

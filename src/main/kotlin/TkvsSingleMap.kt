@@ -3,6 +3,7 @@
 package kt.tkvs
 
 import java.util.LinkedList
+import kt.tkvs.TransactionalKeyValueStore.Companion.NO_TRANSACTION
 
 /**
  * An in-memory transactional key-value store.
@@ -15,17 +16,12 @@ import java.util.LinkedList
  *
  * **WARNING**: The class is not thread-safe!
  */
-class TkvsSingleMap : TransactionalKeyValueStore {
+class TkvsSingleMap : TkvsBaseCountersStoreAware() {
 
     /**
      * The main key-value store.
      */
     private val mainStore = mutableMapOf<String, String>()
-
-    /**
-     * Value counters to support effective [Command.Count] operations.
-     */
-    private val countersStore = mutableMapOf<String, Int>()
 
     /**
      * A list of ongoing transaction change logs. Each is a list of changes.
@@ -34,38 +30,15 @@ class TkvsSingleMap : TransactionalKeyValueStore {
      */
     private val transactions = LinkedList<MutableList<Change>>()
 
-    /**
-     * The current transaction level.
-     *
-     * @return `0` if there are no ongoing transactions.
-     */
     override val transactionLevel: Int
         get() = transactions.size
 
 
     // region Command handlers
 
-    /**
-     * Return the current value for the [key].
-     *
-     * @return `<Key '' not set>` if there was no such key.
-     */
     override operator fun get(key: String): String? = mainStore[key]
 
 
-    /**
-     * Return the number of keys that have the given [value].
-     * Computational complexity is `O(1)` as uses a cached counters.
-     */
-    override fun count(value: String): Int {
-        return countersStore[value] ?: 0
-    }
-
-    /**
-     * Store the [value] for [key].
-     *
-     * @return the previous value for the [key] or `null` if there was no such key.
-     */
     override operator fun set(key: String, value: String): String? {
         return handleSet(key, value, log = true)
     }
@@ -78,11 +51,6 @@ class TkvsSingleMap : TransactionalKeyValueStore {
         return previousValue
     }
 
-    /**
-     * Remove the entry for [key].
-     *
-     * @return the previous value for the [key] or `null` if there was no such key.
-     */
     override fun delete(key: String): String? {
         return handleDelete(key, log = true)
     }
@@ -95,18 +63,10 @@ class TkvsSingleMap : TransactionalKeyValueStore {
         return previousValue
     }
 
-    /**
-     * Start a new transaction.
-     */
     override fun begin() {
         transactions.add(mutableListOf())
     }
 
-    /**
-     * Complete the current transaction.
-     *
-     * @throws IllegalArgumentException if there is no transaction to commit.
-     */
     override fun commit() {
         require(transactions.isNotEmpty()) { NO_TRANSACTION }
         // All changes are already applied to the main store.
@@ -116,11 +76,6 @@ class TkvsSingleMap : TransactionalKeyValueStore {
         transactions.peekLast()?.addAll(currentLog)
     }
 
-    /**
-     * Revert to state prior to [begin] call.
-     *
-     * @throws IllegalArgumentException if there is no transaction to rollback.
-     */
     override fun rollback() {
         require(transactions.isNotEmpty()) { NO_TRANSACTION }
         // Revert changes from the current transaction.
@@ -140,33 +95,13 @@ class TkvsSingleMap : TransactionalKeyValueStore {
     // endregion
 
 
-    // region Utility methods
-
     private fun trackChanges(key: String, previousValue: String?, value: String?, log: Boolean) {
         if (log) {
             transactions.peekLast()?.add(Change(key, previousValue))
         }
-        value?.let { incrementCounter(it) }
-        previousValue?.let { decrementCounter(it) }
+        trackChanges(previousValue, value)
     }
-
-
-    // use compute methods to support atomicity if a map is thread-safe.
-    private fun incrementCounter(value: String) =
-        countersStore.compute(value) { _, oldValue -> (oldValue ?: 0) + 1 }
-
-    private fun decrementCounter(value: String) =
-        countersStore.compute(value) { _, oldValue ->
-            val k = ((oldValue ?: 0) - 1)
-            if (k > 0) k else null
-        }
-
-    // endregion
 
 
     private data class Change(val key: String, val previousValue: String?)
-
-    private companion object {
-        private const val NO_TRANSACTION = "no transaction"
-    }
 }
