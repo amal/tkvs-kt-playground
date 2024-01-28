@@ -13,7 +13,7 @@ class TransactionalKeyValueStoreTest {
 
     @BeforeTest
     fun setUp() {
-        store = TransactionalKeyValueStore()
+        store = TkvsSingleMap()
     }
 
     @AfterTest

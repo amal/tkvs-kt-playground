@@ -1,7 +1,7 @@
 package kt.tkvs
 
 fun main() {
-    val store = TransactionalKeyValueStore()
+    val store: TransactionalKeyValueStore = TkvsSingleMap()
     val parser = CommandParser()
     println("Transactional Key-Value Store CLI")
     @Suppress("LoopWithTooManyJumpStatements")
