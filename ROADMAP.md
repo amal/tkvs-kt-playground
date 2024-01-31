@@ -21,7 +21,7 @@
 ##### CLI
 _(interactive, signals handling, colored output)_
 - jvm
-- GraalVM
+- GraalVM + UPX compression
 - [jvm-cli-compose](https://github.com/JakeWharton/mosaic) (mosaic)
 - js-node
 - wasm-wasi
@@ -29,7 +29,7 @@ _(interactive, signals handling, colored output)_
 
 ##### Application
 - Android _(Compose, Views, Fragments)_
-- iOS _(SwiftUI, Compose)_
+- iOS _(SwiftUI, Compose, [Compose Cupertino](https://github.com/alexzhirkevich/compose-cupertino))_
 - Desktop for all OSes (Win, Linux, Mac)
   - Compose
   - Swing
