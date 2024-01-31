@@ -18,7 +18,7 @@ fun main() {
         }
         if (H.equals(input, ignoreCase = true) || HELP.equals(input, ignoreCase = true)) {
             println(DOCS)
-            break
+            continue
         }
 
         parser.parse(input).mapCatching { command ->
